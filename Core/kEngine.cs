@@ -1,4 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using kEngine.Core.Events;
 using SFML.Graphics;
 using SFML.Window;
 
@@ -8,7 +12,7 @@ namespace kEngine.Core
     {
         private kWindow _window;
         private bool _isPlaying = true;
-        private List<Shape> _renderList;
+        private List<Shape> _renderList = new List<Shape>();
         
         private void Initialize()
         {
@@ -16,10 +20,16 @@ namespace kEngine.Core
             var width = desktopMode.Width;
             var height = desktopMode.Height;
             var title = "kEngine - DEFAULT TITLE";
-            //TODO: LOAD SETTING SCRIPTS THAT ALLOWS YOU TO CHANGE THESE SETTINGS
+            uint framerateCap = 1000;
+
+            //TODO: LOAD SETTING SCRIPTS THAT ALLOWS YOU TO CHANGE WINDOW SETTINGS
             
             
-            _window = new kWindow(width, height, title);
+            //REGISTER EVENTS AND LISTENERS
+            TypeHandler.InstantiateSubTypes<kEvent>();
+            TypeHandler.InstantiateSubTypes<kListener>();
+
+            _window = new kWindow(width, height, title, framerateCap);
         }
 
         public void Run()
@@ -36,7 +46,7 @@ namespace kEngine.Core
 
         private void Tick()
         {
-            
+            EventHolder.TickEvents();
         }
     }
 }
